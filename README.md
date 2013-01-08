@@ -31,7 +31,7 @@ It can also automatically include the formula's dependencies:
 Git clone the repo and symlink `brew-pkg.rb` in Homebrew's `Library/Contributions/cmds` directory.
 <code><pre>git clone https://github.com/timsutton/brew-pkg
 cd brew-pkg
-ln -s $(pwd)/brew-pkg.rb /usr/local/Library/Contributions/cmds/brew-pkg.rb</pre></code>
+ln -s $(pwd)/brew-pkg.rb /usr/local/Library/Contributions/cmds/</pre></code>
 
 Maybe later this will be a simple `brew install brew-pkg`.
 
