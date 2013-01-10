@@ -29,7 +29,7 @@ Options:
 
     abort unpack_usage if ARGV.empty?
     identifier_prefix = if ARGV.include? '--identifier-prefix'
-      ARGV.next
+      ARGV.next.chomp(".")
     else
       'org.homebrew'
     end
