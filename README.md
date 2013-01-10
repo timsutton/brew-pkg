@@ -28,12 +28,13 @@ It can also automatically include the formula's dependencies:
 
 ## Installing it
 
-Git clone the repo and symlink `brew-pkg.rb` in Homebrew's `Library/Contributions/cmds` directory.
-<code><pre>git clone https://github.com/timsutton/brew-pkg
-cd brew-pkg
-ln -s $(pwd)/brew-pkg.rb /usr/local/Library/Contributions/cmds/</pre></code>
+brew-pkg is available from my [formulae tap](https://github.com/timsutton/homebrew-formulae). Add the tap:
 
-Maybe later this will be a simple `brew install brew-pkg`.
+`brew tap timsutton/formulae`
+
+Then install as any other formula:
+
+`brew install brew-pkg`
 
 ## Extras
 
