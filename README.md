@@ -12,7 +12,7 @@ Assuming nginx is already installed:
 ==> Plist found at homebrew.mxcl.nginx, staging for /Library/LaunchDaemons/homebrew.mxcl.nginx.plist
 ==> Building package nginx-1.2.6.pkg</pre></code>
 
-It can also automatically include the formula's dependencies:
+It can also automatically include the formula's dependencies (although currently this includes only those at the top level):
 
 `brew pkg --with-deps ffmpeg`
 <code><pre>==> Creating package staging root using Homebrew prefix /usr/local
