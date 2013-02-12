@@ -53,12 +53,11 @@ Options:
     ohai "Creating package staging root using Homebrew prefix #{HOMEBREW_PREFIX}"
     FileUtils.mkdir_p staging_root
 
-    # Add deps if we specified --with-deps
+
     pkgs = [f]
-    if ARGV.with_deps?
-      deps = f.deps.collect { |d| Formula.factory d.to_s }
-      pkgs += deps
-    end
+
+    # Add deps if we specified --with-deps
+    pkgs += f.recursive_deps if ARGV.with_deps?
 
     pkgs.each do |pkg|
       ohai "Staging formula #{pkg.name}"
