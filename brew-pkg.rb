@@ -57,21 +57,22 @@ Options:
     pkgs = [f]
 
     # Add deps if we specified --with-deps
-    pkgs += f.recursive_deps if ARGV.with_deps?
+    pkgs += f.recursive_dependencies if ARGV.with_deps?
 
     pkgs.each do |pkg|
-      ohai "Staging formula #{pkg.name}"
+      formula = Formula.factory(pkg.to_s)
+      ohai "Staging formula #{formula.name}"
       # Get all directories for this keg, rsync to the staging root
-      dirs = Pathname.new(File.join(HOMEBREW_CELLAR, pkg.name, pkg.version.to_s)).children.select { |c| c.directory? }.collect { |p| p.to_s }
+      dirs = Pathname.new(File.join(HOMEBREW_CELLAR, formula.name, formula.version.to_s)).children.select { |c| c.directory? }.collect { |p| p.to_s }
       dirs.each {|d| safe_system "rsync", "-a", "#{d}", "#{staging_root}/" }
 
       # Write out a LaunchDaemon plist if we have one
-      unless pkg.plist.nil?
-        ohai "Plist found at #{pkg.plist_name}, staging for /Library/LaunchDaemons/#{pkg.plist_name}.plist"
+      if formula.plist
+        ohai "Plist found at #{formula.plist_name}, staging for /Library/LaunchDaemons/#{formula.plist_name}.plist"
         launch_daemon_dir = File.join staging_root, "Library", "LaunchDaemons"
         FileUtils.mkdir_p launch_daemon_dir
-        fd = File.new(File.join(launch_daemon_dir, "#{pkg.plist_name}.plist"), "w")
-        fd.write pkg.plist
+        fd = File.new(File.join(launch_daemon_dir, "#{formula.plist_name}.plist"), "w")
+        fd.write formula.plist
         fd.close
       end
     end
