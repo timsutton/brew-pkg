@@ -40,6 +40,7 @@ Options:
     name = f.name
     identifier = identifier_prefix + ".#{name}"
     version = f.version.to_s
+    version += "_#{f.revision}" if f.revision.to_s != '0'
 
     # Make sure it's installed first
     if not f.installed?
@@ -61,9 +62,12 @@ Options:
 
     pkgs.each do |pkg|
       formula = Formula.factory(pkg.to_s)
+      dep_version = formula.version.to_s
+      dep_version += "_#{formula.revision}" if formula.revision.to_s != '0'
+
       ohai "Staging formula #{formula.name}"
       # Get all directories for this keg, rsync to the staging root
-      dirs = Pathname.new(File.join(HOMEBREW_CELLAR, formula.name, formula.version.to_s)).children.select { |c| c.directory? }.collect { |p| p.to_s }
+      dirs = Pathname.new(File.join(HOMEBREW_CELLAR, formula.name, dep_version)).children.select { |c| c.directory? }.collect { |p| p.to_s }
       dirs.each {|d| safe_system "rsync", "-a", "#{d}", "#{staging_root}/" }
 
       # Write out a LaunchDaemon plist if we have one
