@@ -42,4 +42,5 @@ If a formula has defined a launchd plist, brew-pkg will also install this to the
 
 You can also define a custom identifier prefix in the reverse-domain convention with the `--identifier-prefix` option, ie. `brew pkg --identifier-prefix org.nagios nrpe`. If there is a launchd plist defined, this same prefix is currently _not_ applied to the plist.
 
-You can set the path to custom preinstall and postinstall scripts with the `--scripts` option. It is similar to the `--scripts`option of `pkgbuild`.
+You can set the path to custom preinstall and postinstall scripts with the `--scripts` option which is just literally passed through to the `pkgbuild` command.  
+For more information refer to `man pkgbuild` which explains that *`--scripts scripts_path` archive the entire contents of scripts-path as the package scripts. If this directory contains scripts named preinstall and/or postinstall, these will be run as the top-level scripts of the package [...]*.
