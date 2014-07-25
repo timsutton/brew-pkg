@@ -25,6 +25,7 @@ Options:
                           to the built package's identifier, ie. 'org.nagios'
                           makes a package identifier called 'org.nagios.nrpe'
   --with-deps             include all the package's dependencies in the built package
+  --scripts               set the path to custom preinstall and postinstall scripts
     EOS
 
     abort unpack_usage if ARGV.empty?
@@ -32,6 +33,10 @@ Options:
       ARGV.next.chomp(".")
     else
       'org.homebrew'
+    end
+    
+    if ARGV.include? '--scripts'
+      scripts_path = ARGV.next
     end
 
     f = Formula.factory ARGV.last
@@ -84,12 +89,22 @@ Options:
     # Build it
     pkgfile = "#{name}-#{version}.pkg"
     ohai "Building package #{pkgfile}"
-    safe_system "pkgbuild", \
-                "--quiet", \
-                "--root", "#{pkg_root}", \
-                "--identifier", identifier, \
-                "--version", version, \
-                "#{pkgfile}"
+    if scripts_path
+      safe_system "pkgbuild", \
+                  "--quiet", \
+                  "--root", "#{pkg_root}", \
+                  "--identifier", identifier, \
+                  "--version", version, \
+                  "--scripts", scripts_path, \
+                  "#{pkgfile}"
+    else
+      safe_system "pkgbuild", \
+                  "--quiet", \
+                  "--root", "#{pkg_root}", \
+                  "--identifier", identifier, \
+                  "--version", version, \
+                  "#{pkgfile}"
+    end
     FileUtils.rm_rf pkg_root
   end
 end
