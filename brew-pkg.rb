@@ -34,10 +34,6 @@ Options:
     else
       'org.homebrew'
     end
-    
-    if ARGV.include? '--scripts'
-      scripts_path = ARGV.next
-    end
 
     f = Formula.factory ARGV.last
     # raise FormulaUnspecifiedError if formulae.empty?
@@ -86,25 +82,45 @@ Options:
       end
     end
 
+    # Add scripts if we specified --scripts 
+    found_scripts = false
+    if ARGV.include? '--scripts'
+      scripts_path = ARGV.next
+      if File.directory?(scripts_path)
+        pre = File.join(scripts_path,"preinstall")
+        post = File.join(scripts_path,"postinstall")
+        if File.exists?(pre)
+          File.chmod(0755, pre)
+          found_scripts = true
+          ohai "Adding preinstall script"
+        end
+        if File.exists?(post)
+          File.chmod(0755, post)
+          found_scripts = true
+          ohai "Adding postinstall script"
+        end
+      end
+      if not found_scripts
+        opoo "No scripts found in #{scripts_path}"
+      end
+    end
+
     # Build it
     pkgfile = "#{name}-#{version}.pkg"
     ohai "Building package #{pkgfile}"
-    if scripts_path
-      safe_system "pkgbuild", \
-                  "--quiet", \
-                  "--root", "#{pkg_root}", \
-                  "--identifier", identifier, \
-                  "--version", version, \
-                  "--scripts", scripts_path, \
-                  "#{pkgfile}"
-    else
-      safe_system "pkgbuild", \
-                  "--quiet", \
-                  "--root", "#{pkg_root}", \
-                  "--identifier", identifier, \
-                  "--version", version, \
-                  "#{pkgfile}"
+    args = [
+      "--quiet",
+      "--root", "#{pkg_root}",
+      "--identifier", identifier,
+      "--version", version
+    ]
+    if found_scripts
+      args << "--scripts"
+      args << scripts_path 
     end
+    args << "#{pkgfile}"
+    safe_system "pkgbuild", *args
+
     FileUtils.rm_rf pkg_root
   end
 end
