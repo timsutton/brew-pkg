@@ -41,3 +41,5 @@ Then install as any other formula:
 If a formula has defined a launchd plist, brew-pkg will also install this to the package's root in `/Library/LaunchDaemons`.
 
 You can also define a custom identifier prefix in the reverse-domain convention with the `--identifier-prefix` option, ie. `brew pkg --identifier-prefix org.nagios nrpe`. If there is a launchd plist defined, this same prefix is currently _not_ applied to the plist.
+
+You can set the path to custom preinstall and postinstall scripts with the `--scripts` option. It is similar to the `--scripts`option of `pkgbuild`.
