@@ -112,6 +112,7 @@ Options:
       "--quiet",
       "--root", "#{pkg_root}",
       "--identifier", identifier,
+      "--ownership", "preserve",
       "--version", version
     ]
     if found_scripts
