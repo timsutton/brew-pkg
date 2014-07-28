@@ -105,6 +105,18 @@ Options:
       end
     end
 
+    # Custom ownership
+    found_ownership = false
+    if ARGV.include? '--ownership'
+      custom_ownership = ARGV.next
+       if ['recommended', 'preserve', 'preserve-other'].include? custom_ownership
+        found_ownership = true
+        ohai "Setting pkgbuild option --ownership with value #{custom_ownership}"
+       else
+        opoo "#{custom_ownership} is not a valid value for pkgbuild --ownership option, ignoring"
+       end
+    end
+
     # Build it
     pkgfile = "#{name}-#{version}.pkg"
     ohai "Building package #{pkgfile}"
@@ -112,12 +124,15 @@ Options:
       "--quiet",
       "--root", "#{pkg_root}",
       "--identifier", identifier,
-      "--ownership", "preserve",
       "--version", version
     ]
     if found_scripts
       args << "--scripts"
       args << scripts_path 
+    end
+    if found_ownership
+      args << "--ownership"
+      args << custom_ownership 
     end
     args << "#{pkgfile}"
     safe_system "pkgbuild", *args
