@@ -66,13 +66,25 @@ Options:
       dep_version = formula.version.to_s
       dep_version += "_#{formula.revision}" if formula.revision.to_s != '0'
 
+
       ohai "Staging formula #{formula.name}"
       # Get all directories for this keg, rsync to the staging root
-      dirs = Pathname.new(File.join(HOMEBREW_CELLAR, formula.name, dep_version)).children.select { |c| c.directory? }.collect { |p| p.to_s }
-      dirs.each {|d| safe_system "rsync", "-a", "#{d}", "#{staging_root}/" }
 
-      safe_system "mkdir", "-p", "#{staging_root}/Cellar/#{formula.name}/"
-      safe_system "rsync", "-a", "#{HOMEBREW_CELLAR}/#{formula.name}/#{formula.version}", "#{staging_root}/Cellar/#{formula.name}/"
+      if File.exists?(File.join(HOMEBREW_CELLAR, formula.name, dep_version))
+
+        dirs = Pathname.new(File.join(HOMEBREW_CELLAR, formula.name, dep_version)).children.select { |c| c.directory? }.collect { |p| p.to_s }
+
+
+        dirs.each {|d| safe_system "rsync", "-a", "#{d}", "#{staging_root}/" }
+
+        ohai "Staging directory #{HOMEBREW_CELLAR}/#{formula.name}/#{dep_version}"
+
+        if File.exists?("#{HOMEBREW_CELLAR}/#{formula.name}/#{dep_version}")
+          safe_system "mkdir", "-p", "#{staging_root}/Cellar/#{formula.name}/"
+          safe_system "rsync", "-a", "#{HOMEBREW_CELLAR}/#{formula.name}/#{dep_version}", "#{staging_root}/Cellar/#{formula.name}/"
+        end
+
+      end
 
       # Write out a LaunchDaemon plist if we have one
       if formula.plist
