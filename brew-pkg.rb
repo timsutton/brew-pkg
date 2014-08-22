@@ -69,6 +69,7 @@ Options:
       ohai "Staging formula #{formula.name}"
       # Get all directories for this keg, rsync to the staging root
       dirs = Pathname.new(File.join(HOMEBREW_CELLAR, formula.name, dep_version)).children.select { |c| c.directory? }.collect { |p| p.to_s }
+      dirs.push("#{HOMEBREW_CELLAR}/#{formula.name}/#{formula.version}")
       dirs.each {|d| safe_system "rsync", "-a", "#{d}", "#{staging_root}/" }
 
       # Write out a LaunchDaemon plist if we have one
