@@ -13,26 +13,27 @@ end
 module Homebrew extend self
   def pkg
     unpack_usage = <<-EOS
-Usage: brew pkg [--identifier-prefix] [--with-deps] formula
+Usage: brew pkg --id-prefix prefix [--with-deps] [--without-kegs] formula
 
 Build an OS X installer package from a formula. It must be already
 installed; 'brew pkg' doesn't handle this for you automatically. The
-'--identifier-prefix' option is strongly recommended in order to follow
+'--id-prefix' option is required in order to follow
 the conventions of OS X installer packages.
 
 Options:
-  --identifier-prefix     set a custom identifier prefix to be prepended
+  --id-prefix             set a custom identifier prefix to be prepended
                           to the built package's identifier, ie. 'org.nagios'
                           makes a package identifier called 'org.nagios.nrpe'
   --with-deps             include all the package's dependencies in the built package
+  --without-kegs          exclude package contents at /usr/local/Cellar/packagename
   --scripts               set the path to custom preinstall and postinstall scripts
     EOS
 
     abort unpack_usage if ARGV.empty?
-    identifier_prefix = if ARGV.include? '--identifier-prefix'
+    identifier_prefix = if ARGV.include? '--id-prefix'
       ARGV.next.chomp(".")
     else
-      'org.homebrew'
+      abort unpack_usage
     end
 
     f = Formula.factory ARGV.last
@@ -77,9 +78,11 @@ Options:
 
         dirs.each {|d| safe_system "rsync", "-a", "#{d}", "#{staging_root}/" }
 
-        ohai "Staging directory #{HOMEBREW_CELLAR}/#{formula.name}/#{dep_version}"
 
-        if File.exists?("#{HOMEBREW_CELLAR}/#{formula.name}/#{dep_version}")
+        if File.exists?("#{HOMEBREW_CELLAR}/#{formula.name}/#{dep_version}") and not ARGV.include? '--without-kegs'
+
+          ohai "Staging directory #{HOMEBREW_CELLAR}/#{formula.name}/#{dep_version}"
+
           safe_system "mkdir", "-p", "#{staging_root}/Cellar/#{formula.name}/"
           safe_system "rsync", "-a", "#{HOMEBREW_CELLAR}/#{formula.name}/#{dep_version}", "#{staging_root}/Cellar/#{formula.name}/"
         end
