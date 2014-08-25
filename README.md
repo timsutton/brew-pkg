@@ -28,7 +28,7 @@ It can also automatically include the formula's dependencies:
 
 ## Installing it
 
-brew-pkg is available from my [formulae tap](https://github.com/timsutton/homebrew-formulae). Add the tap:
+brew-pkg is available from my [formulae tap](https://github.com/kaloprominat/homebrew-formulae). Add the tap:
 
 `brew tap kaloprominat/formulae`
 
