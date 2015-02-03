@@ -17,11 +17,11 @@ Usage: brew pkg [--identifier-prefix prefix] [--with-deps] [--without-kegs] form
 
 Build an OS X installer package from a formula. It must be already
 installed; 'brew pkg' doesn't handle this for you automatically. The
-'--id-prefix' option is required in order to follow
+'--identifier-prefix' option is required in order to follow
 the conventions of OS X installer packages.
 
 Options:
-  --id-prefix             set a custom identifier prefix to be prepended
+  --identifier-prefix     set a custom identifier prefix to be prepended
                           to the built package's identifier, ie. 'org.nagios'
                           makes a package identifier called 'org.nagios.nrpe'
   --with-deps             include all the package's dependencies in the built package
@@ -30,10 +30,10 @@ Options:
     EOS
 
     abort unpack_usage if ARGV.empty?
-    identifier_prefix = if ARGV.include? '--id-prefix'
+    identifier_prefix = if ARGV.include? '--identifier-prefix'
       ARGV.next.chomp(".")
     else
-      abort unpack_usage
+      'org.homebrew'
     end
 
     f = Formula.factory ARGV.last
