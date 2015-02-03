@@ -6,7 +6,7 @@ brew-pkg is a Homebrew external command that builds an OS X installer package fr
 
 Assuming nginx is already installed:
 
-`brew pkg --id-prefix org.homebrew nginx`
+`brew pkg org.homebrew nginx`
 <code><pre>==> Creating package staging root using Homebrew prefix /usr/local
 ==> Staging formula nginx
 ==> Plist found at homebrew.mxcl.nginx, staging for /Library/LaunchDaemons/homebrew.mxcl.nginx.plist
@@ -40,7 +40,7 @@ Then install as any other formula:
 
 If a formula has defined a launchd plist, brew-pkg will also install this to the package's root in `/Library/LaunchDaemons`.
 
-You should also define a custom identifier prefix in the reverse-domain convention with the `--id-prefix` option, ie. `brew pkg --id-prefix org.nagios nrpe`. If there is a launchd plist defined, this same prefix is currently _not_ applied to the plist.
+You can also define a custom identifier prefix in the reverse-domain convention with the `--identifier-prefix` option, ie. `brew pkg --identifier-prefix org.nagios nrpe`. If there is a launchd plist defined, this same prefix is currently _not_ applied to the plist.
 
 You can set the path to custom preinstall and postinstall scripts with the `--scripts` option which is just literally passed through to the `pkgbuild` command.  
 For more information refer to `man pkgbuild` which explains that *`--scripts scripts_path` archive the entire contents of scripts-path as the package scripts. If this directory contains scripts named preinstall and/or postinstall, these will be run as the top-level scripts of the package [...]*.
