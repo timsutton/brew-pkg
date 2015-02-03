@@ -13,11 +13,11 @@ end
 module Homebrew extend self
   def pkg
     unpack_usage = <<-EOS
-Usage: brew pkg [--identifier-prefix prefix] [--with-deps] [--without-kegs] formula
+Usage: brew pkg [--identifier-prefix] [--with-deps] [--without-kegs] formula
 
 Build an OS X installer package from a formula. It must be already
 installed; 'brew pkg' doesn't handle this for you automatically. The
-'--identifier-prefix' option is required in order to follow
+'--identifier-prefix' option is strongly recommended in order to follow
 the conventions of OS X installer packages.
 
 Options:
