@@ -6,7 +6,7 @@ brew-pkg is a Homebrew external command that builds an OS X installer package fr
 
 Assuming nginx is already installed:
 
-`brew pkg org.homebrew nginx`
+`brew pkg nginx`
 <code><pre>==> Creating package staging root using Homebrew prefix /usr/local
 ==> Staging formula nginx
 ==> Plist found at homebrew.mxcl.nginx, staging for /Library/LaunchDaemons/homebrew.mxcl.nginx.plist
@@ -25,6 +25,8 @@ It can also automatically include the formula's dependencies:
 ==> Staging formula lame
 ==> Staging formula xvid
 ==> Building package ffmpeg-1.1.pkg</pre></code>
+
+By default behaviour brew pkg include all package kegs located in /usr/local/Cellar/packagename. If you need to exclude it, specify option --without-kegs
 
 ## Installing it
 
