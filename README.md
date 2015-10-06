@@ -46,3 +46,7 @@ You can also define a custom identifier prefix in the reverse-domain convention 
 
 You can set the path to custom preinstall and postinstall scripts with the `--scripts` option which is just literally passed through to the `pkgbuild` command.  
 For more information refer to `man pkgbuild` which explains that *`--scripts scripts_path` archive the entire contents of scripts-path as the package scripts. If this directory contains scripts named preinstall and/or postinstall, these will be run as the top-level scripts of the package [...]*.
+
+## License
+
+brew-pkg is [MIT-licensed](https://github.com/timsutton/brew-pkg/blob/master/LICENSE.md).
