@@ -36,7 +36,7 @@ Options:
       'org.homebrew'
     end
 
-    f = Formula.factory ARGV.last
+    f = Formulary.factory ARGV.last
     # raise FormulaUnspecifiedError if formulae.empty?
     # formulae.each do |f|
     name = f.name
@@ -63,7 +63,7 @@ Options:
     pkgs += f.recursive_dependencies if ARGV.with_deps?
 
     pkgs.each do |pkg|
-      formula = Formula.factory(pkg.to_s)
+      formula = Formulary.factory(pkg.to_s)
       dep_version = formula.version.to_s
       dep_version += "_#{formula.revision}" if formula.revision.to_s != '0'
 
