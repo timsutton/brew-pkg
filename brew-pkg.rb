@@ -60,7 +60,7 @@ Options:
     pkgs = [f]
 
     # Add deps if we specified --with-deps
-    pkgs += f.recursive_dependencies if ARGV.with_deps?
+    pkgs += f.recursive_dependencies if ARGV.include? '--with-deps'
 
     pkgs.each do |pkg|
       formula = Formulary.factory(pkg.to_s)
