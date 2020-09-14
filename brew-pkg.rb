@@ -45,7 +45,7 @@ Options:
     version += "_#{f.revision}" if f.revision.to_s != '0'
 
     # Make sure it's installed first
-    if not f.installed?
+    if not f.any_version_installed?
       onoe "#{f.name} is not installed. First install it with 'brew install #{f.name}'."
       abort
     end
