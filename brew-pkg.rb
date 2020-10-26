@@ -45,7 +45,7 @@ Options:
     version += "_#{f.revision}" if f.revision.to_s != '0'
 
     # Make sure it's installed first
-    if not f.installed?
+    if not f.any_version_installed?
       onoe "#{f.name} is not installed. First install it with 'brew install #{f.name}'."
       abort
     end
@@ -60,7 +60,7 @@ Options:
     pkgs = [f]
 
     # Add deps if we specified --with-deps
-    pkgs += f.recursive_dependencies if ARGV.with_deps?
+    pkgs += f.recursive_dependencies if ARGV.include? '--with-deps'
 
     pkgs.each do |pkg|
       formula = Formulary.factory(pkg.to_s)
