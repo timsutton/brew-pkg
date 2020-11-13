@@ -100,10 +100,10 @@ Options:
       end
     end
 
-    # Add scripts if we specified --scripts 
+    # Add scripts if we specified --scripts
     found_scripts = false
     if ARGV.include? '--scripts'
-      scripts_path = ARGV.next
+      scripts_path = ARGV[ARGV.index('--scripts') + 1]
       if File.directory?(scripts_path)
         pre = File.join(scripts_path,"preinstall")
         post = File.join(scripts_path,"postinstall")
@@ -126,7 +126,7 @@ Options:
     # Custom ownership
     found_ownership = false
     if ARGV.include? '--ownership'
-      custom_ownership = ARGV.next
+      custom_ownership = ARGV[ARGV.index('--ownership') + 1]
        if ['recommended', 'preserve', 'preserve-other'].include? custom_ownership
         found_ownership = true
         ohai "Setting pkgbuild option --ownership with value #{custom_ownership}"
@@ -146,11 +146,11 @@ Options:
     ]
     if found_scripts
       args << "--scripts"
-      args << scripts_path 
+      args << scripts_path
     end
     if found_ownership
       args << "--ownership"
-      args << custom_ownership 
+      args << custom_ownership
     end
     args << "#{pkgfile}"
     safe_system "pkgbuild", *args
