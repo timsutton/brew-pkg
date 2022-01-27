@@ -90,7 +90,7 @@ Options:
       end
 
       # Write out a LaunchDaemon plist if we have one
-      if formula.plist
+      if formula.plist or formula.service
         ohai "Plist found at #{formula.plist_name}, staging for /Library/LaunchDaemons/#{formula.plist_name}.plist"
         launch_daemon_dir = File.join staging_root, "Library", "LaunchDaemons"
         FileUtils.mkdir_p launch_daemon_dir
