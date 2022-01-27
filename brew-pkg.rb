@@ -31,7 +31,7 @@ Options:
 
     abort unpack_usage if ARGV.empty?
     identifier_prefix = if ARGV.include? '--identifier-prefix'
-      ARGV.next.chomp(".")
+      ARGV[ARGV.index('--identifier-prefix') + 1].chomp(".")
     else
       'org.homebrew'
     end
@@ -90,7 +90,7 @@ Options:
       end
 
       # Write out a LaunchDaemon plist if we have one
-      if formula.plist
+      if formula.plist or formula.service
         ohai "Plist found at #{formula.plist_name}, staging for /Library/LaunchDaemons/#{formula.plist_name}.plist"
         launch_daemon_dir = File.join staging_root, "Library", "LaunchDaemons"
         FileUtils.mkdir_p launch_daemon_dir
@@ -103,7 +103,7 @@ Options:
     # Add scripts if we specified --scripts 
     found_scripts = false
     if ARGV.include? '--scripts'
-      scripts_path = ARGV.next
+      scripts_path = ARGV[ARGV.index('--scripts') + 1]
       if File.directory?(scripts_path)
         pre = File.join(scripts_path,"preinstall")
         post = File.join(scripts_path,"postinstall")
@@ -126,7 +126,7 @@ Options:
     # Custom ownership
     found_ownership = false
     if ARGV.include? '--ownership'
-      custom_ownership = ARGV.next
+      custom_ownership = ARGV[ARGV.index('--ownership') + 1]
        if ['recommended', 'preserve', 'preserve-other'].include? custom_ownership
         found_ownership = true
         ohai "Setting pkgbuild option --ownership with value #{custom_ownership}"
