@@ -74,9 +74,29 @@ Options:
       if File.exist?(File.join(HOMEBREW_CELLAR, formula.name, dep_version))
 
         dirs = Pathname.new(File.join(HOMEBREW_CELLAR, formula.name, dep_version)).children.select { |c| c.directory? }.collect { |p| p.to_s }
+        # This works through the original prefix tree and preserves the links so that the resulting package reproduces
+        # same the full tree as is so that Homebrew can work with the files after the fact.
 
-
-        dirs.each {|d| safe_system "rsync", "-a", "#{d}", "#{staging_root}/" }
+        # For each directory in the Cellar found
+        dirs.each do |d|
+          # If its in the magic list of approved directories, proceed
+          ohai "Copy #{d} to #{staging_root}"
+          if d =~ /bin|etc|sbin|include|share|lib|Frameworks$/
+            # Get the file/directory name
+            rel_dir = File.basename(d)
+            # Iterate over everything in that original path
+            Dir.foreach(d) do |filename|
+              next if filename == "." or filename == ".."
+              # If it exists in the main tree and is directory, make it in staging
+              if File.directory?(File.join(HOMEBREW_PREFIX, rel_dir, filename))
+                safe_system "mkdir", "-p", File.join(staging_root, rel_dir, filename)
+                # If its a symlink in the main tree, copy it over to the staging directory
+              elsif File.symlink?(File.join(HOMEBREW_PREFIX, rel_dir, filename))
+                safe_system "rsync", "-a", File.join(HOMEBREW_PREFIX, rel_dir, filename), "#{staging_root}/#{rel_dir}/"
+              end
+            end
+          end
+        end
 
 
         if File.exist?("#{HOMEBREW_CELLAR}/#{formula.name}/#{dep_version}") and not ARGV.include? '--without-kegs'
@@ -87,6 +107,32 @@ Options:
           safe_system "rsync", "-a", "#{HOMEBREW_CELLAR}/#{formula.name}/#{dep_version}", "#{staging_root}/Cellar/#{formula.name}/"
         end
 
+      end
+
+      # Add PREFIX/var/homebrew/linked for interal Homebrew internal
+      stripped_name = formula.name.split("@")[0]
+      if File.exists?("#{HOMEBREW_LINKED_KEGS}/#{formula.name}")
+        safe_system "mkdir", "-p", "#{staging_root}/var/homebrew/linked/"
+        # Greedy grab any link we find, this might be over-aggressive but better than them missing
+        Dir.glob("#{HOMEBREW_LINKED_KEGS}/*#{stripped_name}*") do |link_path|
+          link_filename = File.basename(link_path)
+          safe_system "rsync", "-a", "#{link_path}", "#{staging_root}/var/homebrew/linked/#{link_filename}"
+        end
+      end
+
+      # Python is special cased in that site-packages is global in #{HOMEBREW_PREFIX}/lib/ instead of Cellar
+      if stripped_name == "python"
+        py_version = formula.name.split("@")[1]
+        safe_system "rsync", "-a", "#{HOMEBREW_PREFIX}/lib/#{stripped_name}#{py_version}", "#{staging_root}/lib/"
+      end
+
+      # Add in the opt prefix link to allow Homebrew to reason about latest
+      if formula.optlinked? && File.exists?(formula.opt_prefix)
+        safe_system "mkdir", "-p", "#{staging_root}/opt"
+        Dir.glob("#{HOMEBREW_PREFIX}/opt/*#{stripped_name}*") do |link_path|
+          link_filename = File.basename(link_path)
+          safe_system "rsync", "-a", "#{link_path}", "#{staging_root}/opt/#{link_filename}"
+        end
       end
 
       # Write out a LaunchDaemon plist if we have one
