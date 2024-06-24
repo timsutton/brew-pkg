@@ -90,12 +90,12 @@ Options:
       end
 
       # Write out a LaunchDaemon plist if we have one
-      if formula.plist
+      if formula.service?
         ohai "Plist found at #{formula.plist_name}, staging for /Library/LaunchDaemons/#{formula.plist_name}.plist"
         launch_daemon_dir = File.join staging_root, "Library", "LaunchDaemons"
         FileUtils.mkdir_p launch_daemon_dir
         fd = File.new(File.join(launch_daemon_dir, "#{formula.plist_name}.plist"), "w")
-        fd.write formula.plist
+        fd.write formula.service.to_plist
         fd.close
       end
     end
